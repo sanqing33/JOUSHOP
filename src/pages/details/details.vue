@@ -34,7 +34,9 @@
 							<uni-rate allow-half active-color="red" :value="item.star" />
 						</view>
 					</view>
-					<view style="width: 100px; display: flex; text-align: center; align-items: center; font-size: 14px">{{ Date(item.time) }}</view>
+					<view style="width: 120px; display: flex; text-align: center; align-items: center; font-size: 14px">
+						{{ dayjs(item.time).format('YYYY年MM月DD日 HH:mm:ss') }}
+					</view>
 				</view>
 
 				<view style="margin-top: 10px">{{ item.content }}</view>
@@ -88,20 +90,12 @@
 			<up-icon name="star" label="收藏" labelPos="bottom" size="25"></up-icon>
 		</view>
 		<view style="display: flex; align-items: center">
-			<up-button
-				style="margin-right: 5px; width: 125px"
-				@click="select('shoppingcar')"
-				text="加入购物车"
-				shape="circle"
-				color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
-			></up-button>
-			<up-button
-				style="margin-right: 5px; width: 125px"
-				@click="select('buy')"
-				text="立即购买"
-				shape="circle"
-				color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
-			></up-button>
+			<view style="margin-right: 5px; width: 125px">
+				<up-button @click="select('shoppingcar')" text="加入购物车" shape="circle" color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"></up-button>
+			</view>
+			<view style="margin-right: 5px; width: 125px">
+				<up-button @click="select('buy')" text="立即购买" shape="circle" color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"></up-button>
+			</view>
 		</view>
 	</view>
 
@@ -136,29 +130,22 @@
 			<text style="width: 80px; text-align: center">数量</text>
 			<up-number-box style="margin-right: 30px" v-model="count" @change=""></up-number-box>
 		</view>
-		<view>
+		<view style="margin: 10px auto; width: 90vw">
 			<up-button
 				v-if="selectType === 'shoppingcar'"
-				style="margin: 10px auto; width: 90vw"
 				@click="shoppingcar"
 				text="加入购物车"
 				shape="circle"
 				color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
 			></up-button>
-			<up-button
-				v-if="selectType === 'buy'"
-				style="margin: 10px auto; width: 90vw"
-				@click="buy"
-				text="立即购买"
-				shape="circle"
-				color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
-			></up-button>
+			<up-button v-if="selectType === 'buy'" @click="buy" text="立即购买" shape="circle" color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"></up-button>
 		</view>
 	</up-popup>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed } from 'vue';
+import { reactive, ref } from 'vue';
+import dayjs from 'dayjs';
 
 const img = ref('https://api.btstu.cn/sjbz/api.php');
 
@@ -260,8 +247,8 @@ const radioChange = (n) => {
 </script>
 
 <style lang="scss" scoped>
-body {
-	background: rgb(245, 245, 245);
+page {
+	background-color: rgb(245, 245, 245) !important;
 }
 
 .goods-swiper {

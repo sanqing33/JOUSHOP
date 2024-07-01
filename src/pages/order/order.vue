@@ -27,7 +27,7 @@
 			</scroll-view>
 		</up-popup>
 
-		<up-divider :dashed="true" lineColor="#000"></up-divider>
+		<up-divider lineColor="#000"></up-divider>
 
 		<view style="background: #fff; border-radius: 15px; padding: 10px">
 			<up-text size="20" :text="goods.store"></up-text>
@@ -60,7 +60,9 @@
 
 	<view style="height: 65px; display: flex; justify-content: space-around; align-items: center; padding: 0 20px; background: #fff">
 		<up-text color="red" size="22" mode="price" :text="goods.price * goods.count"></up-text>
-		<up-button style="width: 35vw" type="primary" shape="circle" text="提交订单"></up-button>
+		<view style="width: 35vw">
+			<up-button type="primary" shape="circle" text="提交订单"></up-button>
+		</view>
 	</view>
 </template>
 

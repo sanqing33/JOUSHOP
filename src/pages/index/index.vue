@@ -220,7 +220,6 @@ const goods = ref(goods1);
 .classification {
 	margin-top: 30px;
 	width: 90vw;
-	transform: translateX(5vw);
 
 	.cf-box {
 		display: inline-block;
