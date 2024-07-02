@@ -75,7 +75,6 @@ const change = () => {
 };
 
 const search = () => {
-	console.log('搜索关键字：', keyword.value);
 	uni.navigateTo({
 		url: '../search/search?keyword=' + keyword.value
 	});

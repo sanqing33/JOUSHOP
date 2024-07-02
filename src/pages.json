@@ -49,6 +49,20 @@
 				"navigationBarTitleText": "订单",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/mine/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/mine/details",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"enablePullDownRefresh": false
+			}
 		}
 
 	],
