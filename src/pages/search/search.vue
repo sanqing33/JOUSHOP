@@ -31,7 +31,7 @@
 	</up-tabs>
 
 	<!-- 商品 -->
-	<scroll-view scroll-y="true" style="height: calc(100vh - 150px)">
+	<scroll-view scroll-y="true" style="height: calc(100vh - 106px)">
 		<view style="margin-top: 10px; display: flex; flex-wrap: wrap">
 			<view class="content" v-for="(item, index) in goods" :key="index">
 				<navigator url="/pages/details/details">

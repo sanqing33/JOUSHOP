@@ -1,65 +1,65 @@
 <template>
-	<scroll-view scroll-y="true" style="height: calc(100vh - 109px)">
-		<view @click="showAddress" style="height: 60px; background: #fff; border-radius: 15px">
-			<text v-if="!address" style="line-height: 60px; padding-left: 20vw; font-size: 18px; color: #606060">选择地址</text>
-			<view v-else style="font-size: 18px">
-				<view style="display: flex; margin-left: 10px; padding-top: 5px">
-					<view style="width: 50px">{{ address.name }}</view>
-					<view style="margin-left: 20px">{{ address.phone }}</view>
+	<view @click="showAddress" style="height: 60px; background: #fff; border-radius: 15px">
+		<text v-if="!address" style="line-height: 60px; padding-left: 20vw; font-size: 18px; color: #606060">选择地址</text>
+		<view v-else style="font-size: 18px">
+			<view style="display: flex; margin-left: 10px; padding-top: 5px">
+				<view style="width: 50px">{{ address.name }}</view>
+				<view style="margin-left: 20px">{{ address.phone }}</view>
+			</view>
+			<view style="margin-left: 10px">{{ address.address }}</view>
+		</view>
+	</view>
+
+	<up-popup :show="show" mode="center" @close="close">
+		<scroll-view scroll-y="true" style="width: 100vw; height: 50vh">
+			<view style="border: #dcdcdc 1px solid; margin-bottom: 5px; font-size: 18px; color: #606060" v-for="(item, index) in addresses" :key="index">
+				<view style="display: flex; margin-left: 10px; margin-top: 10px">
+					<view style="width: 50px">{{ item.name }}</view>
+					<view style="margin-left: 20px">{{ item.phone }}</view>
 				</view>
-				<view style="margin-left: 10px">{{ address.address }}</view>
+				<view style="margin-left: 10px">{{ item.address }}</view>
+				<view style="display: flex; margin-top: 10px">
+					<up-button text="编辑"></up-button>
+					<up-button text="选择" @click="checkAddress(item)"></up-button>
+				</view>
+			</view>
+		</scroll-view>
+	</up-popup>
+
+	<view style="background: #fff; border-radius: 15px; padding: 10px; margin: 10px 0; height: calc(100vh - 60px - 65px - 40px)">
+		<scroll-view scroll-y="true" style="height: calc(100vh - 150px - 100px)">
+			<view v-for="(item, index) in goods" :key="index">
+				<up-text size="20" :text="item.store"></up-text>
+				<view style="display: flex; line-height: 10vw; padding: 10px 0">
+					<img :src="item.img" alt="" style="width: 30vw; height: 30vw; object-fit: cover" />
+					<view style="flex: 1; margin-left: 10px">
+						<up-text size="20" :text="item.title"></up-text>
+						<up-text size="16" :text="item.value"></up-text>
+
+						<view style="display: flex; justify-content: space-between">
+							<up-text color="red" size="20" mode="price" :text="item.price"></up-text>
+							<up-number-box style="margin-right: 20px" v-model="item.count" @change=""></up-number-box>
+						</view>
+					</view>
+				</view>
+			</view>
+		</scroll-view>
+		<view style="margin-top: 20px; display: flex; justify-content: space-between">
+			<view>商品金额</view>
+			<view>
+				<up-text color="red" size="16" mode="price" :text="prices"></up-text>
 			</view>
 		</view>
-
-		<up-popup :show="show" mode="center" @close="close">
-			<scroll-view scroll-y="true" style="width: 100vw; height: 50vh">
-				<view style="border: #dcdcdc 1px solid; margin-bottom: 5px; font-size: 18px; color: #606060" v-for="(item, index) in addresses" :key="index">
-					<view style="display: flex; margin-left: 10px; margin-top: 10px">
-						<view style="width: 50px">{{ item.name }}</view>
-						<view style="margin-left: 20px">{{ item.phone }}</view>
-					</view>
-					<view style="margin-left: 10px">{{ item.address }}</view>
-					<view style="display: flex; margin-top: 10px">
-						<up-button text="编辑"></up-button>
-						<up-button text="选择" @click="checkAddress(item)"></up-button>
-					</view>
-				</view>
-			</scroll-view>
-		</up-popup>
-
-		<up-divider lineColor="#000"></up-divider>
-
-		<view style="background: #fff; border-radius: 15px; padding: 10px">
-			<up-text size="20" :text="goods.store"></up-text>
-			<view style="display: flex; line-height: 10vw; padding: 10px 0">
-				<img :src="goods.img" alt="" style="width: 30vw; height: 30vw; object-fit: cover" />
-				<view style="flex: 1; margin-left: 10px">
-					<up-text size="20" :text="goods.title"></up-text>
-					<up-text size="16" :text="goods.value"></up-text>
-
-					<view style="display: flex; justify-content: space-between">
-						<up-text color="red" size="20" mode="price" :text="goods.price"></up-text>
-						<up-number-box style="margin-right: 20px" v-model="goods.count" @change=""></up-number-box>
-					</view>
-				</view>
-			</view>
-			<view style="margin-top: 20px; display: flex; justify-content: space-between">
-				<view>商品金额</view>
-				<view>
-					<up-text color="red" size="16" mode="price" :text="goods.price * goods.count"></up-text>
-				</view>
-			</view>
-			<view style="margin-top: 20px; display: flex; justify-content: space-between">
-				<view>运费</view>
-				<view>
-					<up-text color="black" size="16" mode="price" :text="goods.freight"></up-text>
-				</view>
+		<view style="margin-top: 20px; display: flex; justify-content: space-between">
+			<view>运费</view>
+			<view>
+				<up-text color="black" size="16" mode="price" :text="goods.freight"></up-text>
 			</view>
 		</view>
-	</scroll-view>
+	</view>
 
 	<view style="height: 65px; display: flex; justify-content: space-around; align-items: center; padding: 0 20px; background: #fff">
-		<up-text color="red" size="22" mode="price" :text="goods.price * goods.count"></up-text>
+		<up-text color="red" size="22" mode="price" :text="prices"></up-text>
 		<view style="width: 35vw">
 			<up-button type="primary" shape="circle" text="提交订单"></up-button>
 		</view>
@@ -68,13 +68,29 @@
 
 <script lang="ts" setup>
 import { onLoad } from '@dcloudio/uni-app';
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const goods = ref();
 
+const prices = ref();
+
 onLoad((option) => {
-	goods.value = option;
+	goods.value = [];
+
+	if (option.type == 'buy') {
+		goods.value = [option];
+	} else if (option.type == 'shoppingcar') {
+		goods.value = store.getters.getGoods;
+	}
+
 	console.log(goods.value);
+
+	prices.value = goods.value.reduce((sum, item) => {
+		return sum + item.price * item.count;
+	}, 0);
 });
 
 const addresses = reactive([

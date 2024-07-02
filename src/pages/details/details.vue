@@ -1,5 +1,5 @@
 <template>
-	<scroll-view scroll-y="true" style="height: calc(100vh - 94px)">
+	<scroll-view scroll-y="true" style="height: calc(100vh - 50px)">
 		<up-swiper height="300" :list="swiper" indicator indicatorMode="line" circular></up-swiper>
 
 		<view class="goods-price">
@@ -215,7 +215,7 @@ const shoppingcar = () => {};
 
 const buy = () => {
 	uni.navigateTo({
-		url: `/pages/order/order?store=${store.name}&freight=${freight.value}&value=${value.value}&count=${count.value}&title=${title.value}&img=${img.value}&price=${price.value}`
+		url: `/pages/order/order?type=buy&store=${store.name}&freight=${freight.value}&value=${value.value}&count=${count.value}&title=${title.value}&img=${img.value}&price=${price.value}`
 	});
 };
 

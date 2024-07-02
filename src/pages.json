@@ -63,6 +63,13 @@
 				"navigationBarTitleText": "详情",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/shppingcar/shppingcar",
+			"style": {
+				"navigationBarTitleText": "购物车",
+				"enablePullDownRefresh": false
+			}
 		}
 
 	],
@@ -74,20 +81,26 @@
 	},
 	"tabBar": {
 		"list": [{
-				"pagePath": "pages/index/index", // 注意：这里的路径是相对于pages.json的路径，而不是相对于当前文件的路径。所以不需要添加"pages/"前缀。
+				"pagePath": "pages/index/index",
 				"iconPath": "static/tabBar/首页.png",
 				"selectedIconPath": "static/tabBar/首页2.png",
 				"text": "首页"
 
 			},
 			{
-				"pagePath": "pages/categroy/categroy", // 注意：这里的路径是相对于pages.json的路径，而不是相对于当前文件的路径。所以不需要添加"pages/"前缀。
+				"pagePath": "pages/categroy/categroy",
 				"iconPath": "static/tabBar/分类.png",
 				"selectedIconPath": "static/tabBar/分类2.png",
 				"text": "分类"
 			},
 			{
-				"pagePath": "pages/mine/mine", // 注意：这里的路径是相对于pages.json的路径，而不是相对于当前文件的路径。所以不需要添加"pages/"前缀。
+				"pagePath": "pages/shppingcar/shppingcar",
+				"iconPath": "static/tabBar/购物车.png",
+				"selectedIconPath": "static/tabBar/购物车2.png",
+				"text": "购物车"
+			},
+			{
+				"pagePath": "pages/mine/mine",
 				"iconPath": "static/tabBar/个人中心.png",
 				"selectedIconPath": "static/tabBar/个人中心2.png",
 				"text": "我的"

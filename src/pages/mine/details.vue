@@ -23,9 +23,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
-import { reactive } from '@vue/runtime-core';
 
 const type = ref();
 
