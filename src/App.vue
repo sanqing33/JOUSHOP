@@ -12,4 +12,7 @@ onHide(() => {
 </script>
 <style lang="scss">
 @import 'uview-plus/index.scss';
+page {
+	background-color: rgb(237, 222, 205) !important;
+}
 </style>
