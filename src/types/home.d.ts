@@ -1,16 +1,16 @@
-export type homeSwiper = {
+export type HomeSwiper = {
   hrefUrl?: string;
   id?: string;
   imgUrl: string;
   type?: number;
 };
 
-export type homeCategory = {
+export type HomeCategory = {
   id: string;
   name: string;
   icon: string;
 };
-export type homeGoods = {
+export type HomeGoods = {
   desc: string;
   discount: number;
   id: string;

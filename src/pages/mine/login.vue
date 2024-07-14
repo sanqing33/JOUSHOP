@@ -10,7 +10,7 @@
 
     <view class="input">
       <view class="login-check">
-        <view v-if="login_check">
+        <view v-if="!login_check">
           <input
             style="background: #fff"
             type="text"
@@ -43,17 +43,10 @@
             style="background: #fff"
             type="text"
             v-model="form.phone"
-            placeholder="请输入手机号"
-          />
-          <input
-            style="background: #fff"
-            type="text"
-            v-model="form.password"
-            password
-            placeholder="请输入密码"
+            placeholder="请输入店铺管理员手机号"
           />
           <button
-            style="margin-top: 50px; background-color: #28bb9c"
+            style="margin-top: 102px; background-color: #28bb9c"
             @click="login('admin')"
           >
             店铺管理员登录
@@ -62,7 +55,7 @@
             style="background-color: #c0c0c0; margin-top: 20px"
             @click="change_login_check"
           >
-            登录
+            用户登录
           </button>
         </view>
       </view>
@@ -80,6 +73,8 @@
 
 <script lang="ts" setup>
 import { loginAdminAPI, loginUserAPI } from "@/api/mine";
+import { userInfoStore } from "@/stores/user";
+import { UserInfo } from "@/types/global";
 import { reactive, ref } from "vue";
 
 const clause = ref(false);
@@ -103,25 +98,27 @@ const login = async (type: string) => {
   if (clause.value !== true)
     return uni.showToast({ title: "请先阅读并同意服务条款", icon: "none" });
 
-  if (login_check.value === true) {
-    console.log("手机号快捷登录");
-  } else {
-    if (form.phone === "" || form.password === "")
-      return uni.showToast({ title: "请填写用户名和密码", icon: "none" });
+  if (form.phone === "")
+    return uni.showToast({ title: "请填写手机号", icon: "none" });
+
+  const userInfo = ref<UserInfo>();
+
+  if (type === "user") {
+    if (form.password === "")
+      return uni.showToast({ title: "请填写密码", icon: "none" });
     if (form.password.length < 6)
       return uni.showToast({ title: "密码长度不能小于6位", icon: "none" });
     if (form.phone.length < 11)
       return uni.showToast({ title: "用户名长度不能小于11位", icon: "none" });
-    console.log("用户名密码登录", form);
-
-    const res = ref();
-
-    if (type === "user") {
-      const res = await loginUserAPI(form.phone, form.password);
-    } else if (type === "admin") {
-      const res = await loginAdminAPI(form.phone, form.password);
-    }
+    const res = await loginUserAPI(form.phone, form.password);
+    userInfo.value = res.result;
+  } else if (type === "admin") {
+    const res = await loginAdminAPI(form.phone);
+    userInfo.value = res.result;
   }
+
+  const setUserInfoStore = userInfoStore();
+  setUserInfoStore.setUserInfo(userInfo.value!);
 };
 </script>
 

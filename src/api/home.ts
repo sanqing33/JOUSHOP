@@ -1,10 +1,10 @@
-import type { pageParams, pageResult } from "@/types/global";
-import type { homeCategory, homeGoods, homeSwiper } from "@/types/home";
+import type { pageParams, PageResult } from "@/types/global";
+import type { HomeCategory, HomeGoods, HomeSwiper } from "@/types/home";
 import { http } from "./index";
 
 // 首页轮播图
 export const getHomeSwiperAPI = (distributionSite = 1) => {
-  return http<homeSwiper[]>({
+  return http<HomeSwiper[]>({
     method: "GET",
     url: "/home/banner",
     data: {
@@ -15,7 +15,7 @@ export const getHomeSwiperAPI = (distributionSite = 1) => {
 
 // 首页分类
 export const getHomeCategoryAPI = () => {
-  return http<homeCategory[]>({
+  return http<HomeCategory[]>({
     method: "GET",
     url: "/home/category/mutli",
   });
@@ -23,7 +23,7 @@ export const getHomeCategoryAPI = () => {
 
 // 首页推荐
 export const getHomeGoodsAPI = (data?: pageParams) => {
-  return http<pageResult<homeGoods>>({
+  return http<PageResult<HomeGoods>>({
     method: "GET",
     url: "/home/goods/guessLike",
     data,

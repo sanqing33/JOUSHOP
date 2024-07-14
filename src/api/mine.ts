@@ -1,25 +1,31 @@
+import type { UserInfo } from "@/types/global";
 import { http } from "./index";
 
 // 用户登录
 export const loginUserAPI = (phone: string, password: string) => {
-  return http({
+  return http<UserInfo>({
     method: "POST",
-    url: " /api/v1/login/login_auth",
+    url: "/login",
+    header: {
+      "Content-Type": "application/json",
+    },
     data: {
-      phone,
+      account: phone,
       password,
     },
   });
 };
 
 // 店铺管理员登录
-export const loginAdminAPI = (phone: string, password: string) => {
-  return http({
+export const loginAdminAPI = (phone: string) => {
+  return http<UserInfo>({
     method: "POST",
-    url: " /api/v1/login/login_auth/StoreAdmin",
+    url: "/login/wxMin/simple",
+    header: {
+      "Content-Type": "application/json",
+    },
     data: {
-      phone,
-      password,
+      phoneNumber: phone,
     },
   });
 };

@@ -1,14 +1,14 @@
 import type { GoodsItem } from "./global";
 
-export type firstCategroy = {
-  children: secondCategroy[];
+export type FirstCategroy = {
+  children: SecondCategroy[];
   id: string;
   imageBanners: string[];
   name: string;
   picture: string;
 };
 
-export type secondCategroy = {
+export type SecondCategroy = {
   goods: GoodsItem[];
   id: string;
   name: string;

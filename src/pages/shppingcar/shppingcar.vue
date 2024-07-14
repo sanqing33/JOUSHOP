@@ -40,7 +40,6 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
-import { useStore } from 'vuex';
 
 const store = useStore();
 
@@ -113,7 +112,7 @@ const change = () => {
 const buy = () => {
 	store.commit('setGoods', goods);
 	uni.navigateTo({
-		url: '/pages/order/order?type=shoppingcar'
+		url: '/pages/order/order?type=shoppingcar' 
 	});
 };
 </script>

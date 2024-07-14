@@ -69,7 +69,6 @@
 <script lang="ts" setup>
 import { onLoad } from '@dcloudio/uni-app';
 import { reactive, ref, onMounted } from 'vue';
-import { useStore } from 'vuex';
 
 const store = useStore();
 

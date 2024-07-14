@@ -1,16 +1,14 @@
 <template>
   <view
     style="
-      margin-top: 10px;
       padding-top: 10px;
       display: flex;
       flex-wrap: wrap;
       background: #f0f0f0;
-      border-radius: 10px;
     "
   >
-    <view class="content" v-for="item in goods" :key="item.id">
-      <navigator url="/pages/details/details">
+    <view class="content" v-for="item in props.goods" :key="item.id">
+      <navigator :url="`/pages/details/details?goods_id=${item.id}`">
         <image :src="item.picture" mode="aspectFill"></image>
         <view style="margin-left: 10px; height: 42px">{{ item.name }}</view>
         <view style="color: red; margin-left: 5px; font-size: 16px">
@@ -25,47 +23,23 @@
       </navigator>
     </view>
   </view>
-  <view style="text-align: center; margin: 10px 0">
-    {{ finish ? "没有更多数据了" : "正在加载中..." }}
+  <view style="text-align: center; padding: 10px 0; background: #f0f0f0">
+    {{ props.finish ? "没有更多数据了" : "正在加载中..." }}
   </view>
 </template>
 
 <script lang="ts" setup>
-import { getHomeGoodsAPI } from "@/api/home";
-import type { pageParams } from "@/types/global";
-import type { homeGoods } from "@/types/home";
-import { onLoad } from "@dcloudio/uni-app";
-import { ref } from "vue";
+import type { HomeGoods } from "@/types/home";
 
-const goods = ref<homeGoods[]>([]);
-
-const pageParams: pageParams = {
-  page: 1,
-  pageSize: 10,
-};
-
-const finish = ref(false);
-
-const getHomeGoods = async () => {
-  if (finish.value) return;
-
-  const res = await getHomeGoodsAPI(pageParams);
-  goods.value.push(...res.result.items);
-  console.log();
-
-  if (pageParams.page! <= res.result.pages) {
-    pageParams.page!++;
-  } else {
-    finish.value = true;
-  }
-};
-
-onLoad(() => {
-  getHomeGoods();
-});
-
-defineExpose({
-  getHomeGoods,
+const props = defineProps({
+  goods: {
+    type: Array as () => HomeGoods[],
+    default: () => [],
+  },
+  finish: {
+    type: Boolean,
+    default: false,
+  },
 });
 </script>
 

@@ -72,7 +72,7 @@
 
 <script lang="ts" setup>
 import { getFirstCategoriesAPI } from "@/api/categroy";
-import type { firstCategroy } from "@/types/categroy";
+import type { FirstCategroy } from "@/types/categroy";
 import { onLoad } from "@dcloudio/uni-app";
 import { computed, ref } from "vue";
 
@@ -88,7 +88,7 @@ const first_change = (index: number) => {
   first_check.value = index;
 };
 
-const first_categories = ref<firstCategroy[]>([]);
+const first_categories = ref<FirstCategroy[]>([]);
 
 const getFirstCategories = async () => {
   const res = await getFirstCategoriesAPI();

@@ -32,7 +32,7 @@
     </view>
 
     <!-- 首页分类 -->
-    <view style="width: 90vw; margin: 10px auto 0 auto">
+    <view style="width: 90vw; margin: 10px auto">
       <view class="classification">
         <view class="cf-box" v-for="item in categroies" :key="item.id">
           <navigator :url="item.icon" open-type="switchTab">
@@ -60,14 +60,19 @@
     </view>
 
     <!-- 商品 -->
-    <Goods ref="goods"></Goods>
+    <Goods :goods="goods" :finish="finish"></Goods>
   </scroll-view>
 </template>
 
 <script setup lang="ts">
-import { getHomeCategoryAPI, getHomeSwiperAPI } from "@/api/home";
+import {
+  getHomeCategoryAPI,
+  getHomeGoodsAPI,
+  getHomeSwiperAPI,
+} from "@/api/home";
 import Goods from "@/components/goods.vue";
-import type { homeCategory } from "@/types/home";
+import type { pageParams } from "@/types/global";
+import type { HomeCategory, HomeGoods } from "@/types/home";
 import { onLoad } from "@dcloudio/uni-app";
 import { ref } from "vue";
 
@@ -106,7 +111,7 @@ onLoad(() => {
 });
 
 // 首页分类
-const categroies = ref<homeCategory[]>([]);
+const categroies = ref<HomeCategory[]>([]);
 
 onLoad(() => {
   const getHomeCategory = async () => {
@@ -115,8 +120,6 @@ onLoad(() => {
   };
   getHomeCategory();
 });
-
-// 商品
 
 const categroy = ref([
   { name: "精选" },
@@ -129,10 +132,36 @@ const categroy = ref([
   { name: "洗护" },
 ]);
 
-const goods = ref();
+// 商品列表
+const goods = ref<HomeGoods[]>([]);
+
+const pageParams: pageParams = {
+  page: 1,
+  pageSize: 10,
+};
+
+const finish = ref(false);
+
+const getHomeGoods = async () => {
+  if (finish.value) return;
+
+  const res = await getHomeGoodsAPI(pageParams);
+  goods.value.push(...res.result.items);
+  console.log();
+
+  if (pageParams.page! <= res.result.pages) {
+    pageParams.page!++;
+  } else {
+    finish.value = true;
+  }
+};
+
+onLoad(() => {
+  getHomeGoods();
+});
 
 const handleScroll = () => {
-  goods.value.getHomeGoods();
+  getHomeGoods();
 };
 </script>
 
