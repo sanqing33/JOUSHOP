@@ -10,3 +10,12 @@ export type homeCategory = {
   name: string;
   icon: string;
 };
+export type homeGoods = {
+  desc: string;
+  discount: number;
+  id: string;
+  name: string;
+  orderNum: number;
+  picture: string;
+  price: number;
+};
