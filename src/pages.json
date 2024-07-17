@@ -80,7 +80,7 @@
       }
     },
     {
-      "path": "pages/shppingcar/shppingcar",
+      "path": "pages/details/shppingcar",
       "style": {
         "navigationBarTitleText": "购物车",
         "enablePullDownRefresh": false
@@ -108,7 +108,7 @@
         "text": "分类"
       },
       {
-        "pagePath": "pages/shppingcar/shppingcar",
+        "pagePath": "pages/details/shppingcar",
         "iconPath": "static/tabBar/购物车.png",
         "selectedIconPath": "static/tabBar/购物车2.png",
         "text": "购物车"

@@ -130,44 +130,6 @@
         </view>
       </view>
 
-      <!-- 店铺其他商品 -->
-      <view class="goods-others">
-        <view
-          style="
-            font-size: 18px;
-            font-weight: bold;
-            margin-left: 10px;
-            padding-top: 5px;
-          "
-          >店铺其他商品</view
-        >
-        <view style="display: flex; flex-wrap: wrap; margin: 0 5px">
-          <view
-            v-for="item in others"
-            :key="item.id"
-            style="
-              margin-top: 10px;
-              width: calc((100vw - 40px) / 3);
-              margin: 5px;
-            "
-          >
-            <view style="height: 160px">
-              <image
-                :src="item.coverUrl"
-                mode="aspectFill"
-                style="width: 100%; height: 28vw"
-              ></image>
-              <view style="margin-left: 5px">
-                <view>{{ item.name }}</view>
-                <view style="color: red; font-size: 18px"
-                  >￥{{ item.price }}</view
-                >
-              </view>
-            </view>
-          </view>
-        </view>
-      </view>
-
       <!-- 商品介绍 -->
       <view class="goods-intro">
         <view style="font-size: 18px; font-weight: bold">商品介绍</view>
@@ -237,7 +199,7 @@
       <view style="display: flex; align-items: center">
         <view style="margin-right: 5px; width: 125px">
           <up-button
-            @click="select('shoppingcar')"
+            @click="showSku('cart')"
             text="加入购物车"
             shape="circle"
             color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
@@ -245,7 +207,7 @@
         </view>
         <view style="margin-right: 5px; width: 125px">
           <up-button
-            @click="select('buy')"
+            @click="showSku('buy')"
             text="立即购买"
             shape="circle"
             color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
@@ -255,72 +217,20 @@
     </view>
 
     <!-- 加入购物车/立即购买 弹窗 -->
-    <up-popup :show="buyShow" mode="bottom" @close="close">
-      <scroll-view :scroll-y="true" style="height: 50vh">
-        <view style="padding: 20px; display: flex">
-          <img
-            :src="img"
-            alt=""
-            style="
-              width: 35vw;
-              height: 35vw;
-              object-fit: cover;
-              border-radius: 15px;
-            "
-          />
-          <view style="margin: auto 30px; color: red">
-            <text>￥</text>
-            <text style="font-size: 25px">{{ price }}</text>
-          </view>
-        </view>
-        <view style="display: flex; height: 20vh">
-          <text style="width: 80px; text-align: center">规格</text>
-          <up-radio-group v-model="value">
-            <up-radio
-              style="margin-left: 10px"
-              iconColor="transparent"
-              inactiveColor="transparent"
-              :customStyle="{ marginBottom: '8px' }"
-              v-for="(item, index) in option"
-              :key="index"
-              :label="item.name"
-              :name="item.name"
-              @change="radioChange"
-            ></up-radio>
-          </up-radio-group>
-        </view>
-      </scroll-view>
-      <view style="display: flex; justify-content: space-between">
-        <text style="width: 80px; text-align: center">数量</text>
-        <up-number-box
-          style="margin-right: 30px"
-          v-model="count"
-          @change=""
-        ></up-number-box>
-      </view>
-      <view style="margin: 10px auto; width: 90vw">
-        <up-button
-          v-if="selectType === 'shoppingcar'"
-          @click="shoppingcar"
-          text="加入购物车"
-          shape="circle"
-          color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
-        ></up-button>
-        <up-button
-          v-if="selectType === 'buy'"
-          @click="buy"
-          text="立即购买"
-          shape="circle"
-          color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
-        ></up-button>
-      </view>
-    </up-popup>
+    <vk_data_goods_sku_popup
+      v-model="isShowSku"
+      :localdata="localdata"
+      :mode="mode"
+      @add-cart="addcart"
+    />
   </view>
 </template>
 
 <script lang="ts" setup>
-import { getGoodsDetailAPI } from "@/api/details";
+import { getGoodsDetailAPI, postcartAPI } from "@/api/details";
 import Goods from "@/components/goods.vue";
+import type { SkuPopupEvent } from "@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup";
+import vk_data_goods_sku_popup from "@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import dayjs from "dayjs";
 import { reactive, ref } from "vue";
@@ -335,6 +245,21 @@ const getGoodsDetail = async () => {
   const res = await getGoodsDetailAPI(goodsId.value);
   loading.value = false;
   goods.value = res.result;
+  localdata.value = {
+    _id: res.result.id,
+    name: res.result.name,
+    goods_thumb: res.result.mainPictures[0],
+    spec_list: res.result.specs.map((v) => ({ name: v.name, list: v.values })),
+    sku_list: res.result.skus.map((v) => ({
+      _id: v.id,
+      goods_id: res.result.id,
+      goods_name: res.result.name,
+      image: v.picture,
+      price: v.price * 100, // 注意：需要乘以 100
+      stock: v.inventory,
+      sku_name_arr: v.specs.map((vv) => vv.valueName),
+    })),
+  };
 };
 
 onLoad((option?: AnyObject) => {
@@ -342,16 +267,6 @@ onLoad((option?: AnyObject) => {
   goodsId.value = option?.goods_id;
   getGoodsDetail();
 });
-
-const img = ref("https://api.btstu.cn/sjbz/api.php");
-
-const title = ref("鸽鸽下的蛋");
-
-const price = ref(99.99);
-
-const freight = ref(0.0);
-
-const sold = ref(999);
 
 const evaluate = reactive({
   count: 99,
@@ -375,104 +290,36 @@ const evaluate = reactive({
   ],
 });
 
-const swiper = ref([
-  "https://cdn.uviewui.com/uview/swiper/swiper3.png",
-  "https://cdn.uviewui.com/uview/swiper/swiper2.png",
-  "https://cdn.uviewui.com/uview/swiper/swiper1.png",
-]);
-
-const store = reactive({
-  coverUrl: "../../static/index/swiper/背带裤.jpg",
-  name: "坤坤之家",
-  focus: 999,
-  products: 9999,
-});
-
-const others = reactive([
-  {
-    id: 1,
-    coverUrl: "../../static/index/kktx.webp",
-    name: "鸽鸽的蛋1",
-    price: 98.0,
-  },
-  {
-    id: 2,
-    coverUrl: "../../static/index/kktx.webp",
-    name: "鸽鸽的蛋2",
-    price: 128.88,
-  },
-  {
-    id: 3,
-    coverUrl: "../../static/index/kktx.webp",
-    name: "鸽鸽的蛋3",
-    price: 328.0,
-  },
-  {
-    id: 4,
-    coverUrl: "../../static/index/kktx.webp",
-    name: "鸽鸽的蛋4",
-    price: 648.0,
-  },
-  {
-    id: 5,
-    coverUrl: "../../static/index/kktx.webp",
-    name: "鸽鸽的蛋5",
-    price: 6666.66,
-  },
-  {
-    id: 6,
-    coverUrl: "../../static/index/kktx.webp",
-    name: "鸽鸽的蛋6",
-    price: 99999.99,
-  },
-]);
-
-const buyShow = ref(false);
-
-const selectType = ref();
-
-const select = (a: string) => {
-  selectType.value = a;
-  buyShow.value = true;
-  console.log(selectType.value);
-};
-
-const value = ref("紫色");
-
-const count = ref(1);
-
-const shoppingcar = () => {};
-
 const buy = () => {
   uni.navigateTo({
     url: `/pages/order/order?type=buy&store=${store.name}&freight=${freight.value}&value=${value.value}&count=${count.value}&title=${title.value}&img=${img.value}&price=${price.value}`,
   });
 };
 
-const close = () => {
-  buyShow.value = false;
+const isShowSku = ref(false);
+
+const localdata = ref();
+
+const mode = ref();
+
+const showSku = (a: string) => {
+  isShowSku.value = true;
+  switch (a) {
+    case "cart":
+      mode.value = 2;
+      break;
+    case "buy":
+      mode.value = 3;
+      break;
+    default:
+      break;
+  }
 };
 
-const option = reactive([
-  {
-    name: "紫色",
-    value: "purple",
-    disabled: false,
-  },
-  {
-    name: "蓝色",
-    value: "blue",
-    disabled: false,
-  },
-  {
-    name: "绿色",
-    value: "green",
-    disabled: false,
-  },
-]);
-
-const radioChange = (n: any) => {
-  value.value = n;
+const addcart = async (e: SkuPopupEvent) => {
+  await postcartAPI(e._id, e.buy_num);
+  uni.showToast({ title: "添加成功" });
+  isShowSku.value = false;
 };
 </script>
 
