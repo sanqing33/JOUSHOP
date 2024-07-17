@@ -1,5 +1,7 @@
 import type { GoodsItem } from "./global";
 
+
+
 export type FirstCategroy = {
   children: SecondCategroy[];
   id: string;

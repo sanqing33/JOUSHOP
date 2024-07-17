@@ -1,3 +1,6 @@
+import { Goods, Page } from "./global";
+
+// 首页轮播图
 export type HomeSwiper = {
   hrefUrl?: string;
   id?: string;
@@ -5,17 +8,21 @@ export type HomeSwiper = {
   type?: number;
 };
 
+// 首页分类
 export type HomeCategory = {
   id: string;
   name: string;
   icon: string;
 };
+
+// 首页商品
 export type HomeGoods = {
-  desc: string;
-  discount: number;
+  bannerPictures: string;
   id: string;
-  name: string;
-  orderNum: number;
-  picture: string;
-  price: number;
+  title: string;
+  subTypes: Array<{
+    id: string;
+    title: string;
+    goodsItems: Page<Goods>;
+  }>;
 };

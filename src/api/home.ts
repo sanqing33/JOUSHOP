@@ -1,4 +1,4 @@
-import type { pageParams, PageResult } from "@/types/global";
+import type { Page } from "@/types/global";
 import type { HomeCategory, HomeGoods, HomeSwiper } from "@/types/home";
 import { http } from "./index";
 
@@ -22,10 +22,10 @@ export const getHomeCategoryAPI = () => {
 };
 
 // 首页推荐
-export const getHomeGoodsAPI = (data?: pageParams) => {
-  return http<PageResult<HomeGoods>>({
+export const getHomeGoodsAPI = (url: string, data?: Page) => {
+  return http<HomeGoods>({
     method: "GET",
-    url: "/home/goods/guessLike",
+    url,
     data,
   });
 };

@@ -73,8 +73,8 @@
 
 <script lang="ts" setup>
 import { loginAdminAPI, loginUserAPI } from "@/api/mine";
-import { userInfoStore } from "@/stores/user";
-import { UserInfo } from "@/types/global";
+import { userStore } from "@/stores/user";
+import type { UserInfo } from "@/types/global";
 import { reactive, ref } from "vue";
 
 const clause = ref(false);
@@ -117,8 +117,10 @@ const login = async (type: string) => {
     userInfo.value = res.result;
   }
 
-  const setUserInfoStore = userInfoStore();
-  setUserInfoStore.setUserInfo(userInfo.value!);
+  const User = userStore();
+  User.setUserInfo(userInfo.value!);
+
+  uni.switchTab({ url: "/pages/mine/mine" });
 };
 </script>
 

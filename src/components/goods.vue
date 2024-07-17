@@ -11,14 +11,9 @@
       <navigator :url="`/pages/details/details?goods_id=${item.id}`">
         <image :src="item.picture" mode="aspectFill"></image>
         <view style="margin-left: 10px; height: 42px">{{ item.name }}</view>
-        <view style="color: red; margin-left: 5px; font-size: 16px">
+        <view style="color: red; margin: 5px 0; font-size: 16px">
           <text>￥</text>
           <text>{{ item.price }}</text>
-        </view>
-        <view style="margin: 0 5px 3px 0; text-align: right">
-          <text style="font-size: 12px; color: rgb(128, 128, 128)">{{
-            item.desc
-          }}</text>
         </view>
       </navigator>
     </view>
@@ -29,11 +24,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { HomeGoods } from "@/types/home";
+import type { Goods } from "@/types/global";
 
 const props = defineProps({
   goods: {
-    type: Array as () => HomeGoods[],
+    type: Array as () => Goods[],
     default: () => [],
   },
   finish: {

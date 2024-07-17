@@ -66,6 +66,20 @@
       }
     },
     {
+      "path": "pages/mine/info",
+      "style": {
+        "navigationBarTitleText": "个人信息",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/mine/address",
+      "style": {
+        "navigationBarTitleText": "收货地址",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/shppingcar/shppingcar",
       "style": {
         "navigationBarTitleText": "购物车",

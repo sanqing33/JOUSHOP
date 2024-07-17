@@ -2,14 +2,15 @@ import type { UserInfo } from "@/types/global";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const userInfoStore = defineStore(
+export const userStore = defineStore(
   "userInfo",
   () => {
     const userInfo = ref<UserInfo>();
 
     const setUserInfo = (info: UserInfo) => {
-      userInfo.value = info;
+      userInfo.value = { ...userInfo.value, ...info };
       console.log("setUserInfo", info);
+      
     };
 
     const clearUserInfo = () => {

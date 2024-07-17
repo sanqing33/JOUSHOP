@@ -1,6 +1,6 @@
 <template>
   <scroll-view
-    scroll-y="true"
+    :scroll-y="true"
     style="width: 100vw; height: 100vh"
     @scrolltolower="handleScroll"
   >
@@ -15,7 +15,7 @@
         searchIcon="scan"
         @clickIcon="scan"
         height="40"
-        animation="true"
+        :animation="true"
       ></up-search>
     </view>
 
@@ -41,10 +41,12 @@
           </navigator>
         </view>
       </view>
+      <!-- 分类标签 -->
       <up-tabs
         @click="categoryClick"
         :list="categroy"
-        lineWidth="30"
+        :scrollable="false"
+        lineWidth="50"
         lineColor="#f56c6c"
         :activeStyle="{
           color: '#303133',
@@ -60,7 +62,7 @@
     </view>
 
     <!-- 商品 -->
-    <Goods :goods="goods" :finish="finish"></Goods>
+    <GoodsUtils :goods="goods" :finish="finish"></GoodsUtils>
   </scroll-view>
 </template>
 
@@ -70,9 +72,9 @@ import {
   getHomeGoodsAPI,
   getHomeSwiperAPI,
 } from "@/api/home";
-import Goods from "@/components/goods.vue";
-import type { pageParams } from "@/types/global";
-import type { HomeCategory, HomeGoods } from "@/types/home";
+import GoodsUtils from "@/components/goods.vue";
+import type { Goods, Page } from "@/types/global";
+import type { HomeCategory } from "@/types/home";
 import { onLoad } from "@dcloudio/uni-app";
 import { ref } from "vue";
 
@@ -121,35 +123,31 @@ onLoad(() => {
   getHomeCategory();
 });
 
+// 分类标签
 const categroy = ref([
-  { name: "精选" },
-  { name: "热卖", badge: { isDot: true } },
-  { name: "数码" },
-  { name: "家电" },
-  { name: "居家" },
-  { name: "美食" },
-  { name: "穿搭" },
-  { name: "洗护" },
+  { name: "热卖", url: "/hot/inVogue" },
+  { name: "精选", url: "/hot/oneStop", badge: { isDot: true } },
+  { name: "特惠", url: "/hot/preference" },
+  { name: "尝鲜", url: "/hot/new" },
 ]);
 
 // 商品列表
-const goods = ref<HomeGoods[]>([]);
+const goods = ref<Goods[]>([]);
 
-const pageParams: pageParams = {
+const pageParams: Page = {
   page: 1,
   pageSize: 10,
 };
 
 const finish = ref(false);
 
-const getHomeGoods = async () => {
+const getHomeGoods = async (url: string = categroy.value[0].url) => {
   if (finish.value) return;
+  const res = await getHomeGoodsAPI(url, pageParams);
 
-  const res = await getHomeGoodsAPI(pageParams);
-  goods.value.push(...res.result.items);
-  console.log();
+  goods.value.push(...res.result.subTypes[0].goodsItems.items);
 
-  if (pageParams.page! <= res.result.pages) {
+  if (pageParams.page! <= res.result.subTypes[0].goodsItems.pages) {
     pageParams.page!++;
   } else {
     finish.value = true;
@@ -159,6 +157,11 @@ const getHomeGoods = async () => {
 onLoad(() => {
   getHomeGoods();
 });
+
+const categoryClick = (index: any) => {
+  goods.value = [];
+  getHomeGoods(index.url);
+};
 
 const handleScroll = () => {
   getHomeGoods();

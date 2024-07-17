@@ -1,3 +1,5 @@
+import { userStore } from "@/stores/user";
+
 const baseUrl = "https://pcapi-xiaotuxian-front-devtest.itheima.net";
 
 const httpInterceptor = {
@@ -6,13 +8,19 @@ const httpInterceptor = {
       options.url = baseUrl + options.url;
       options.header = {
         "source-client": "miniapp",
+        ...options.header,
       };
+    }
+    const User = userStore();
+    const token = User.userInfo?.token;
+    if (token) {
+      options.header.Authorization = token;
     }
   },
 };
 
 uni.addInterceptor("request", httpInterceptor);
-uni.addInterceptor("request", httpInterceptor);
+uni.addInterceptor("uploadFile", httpInterceptor);
 
 type Data<T> = {
   code: string;

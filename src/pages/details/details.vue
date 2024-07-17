@@ -19,7 +19,7 @@
   </view>
 
   <view v-else>
-    <scroll-view scroll-y="true" style="height: calc(100vh - 50px)">
+    <scroll-view :scroll-y="true" style="height: calc(100vh - 50px)">
       <!-- 商品图片 -->
       <up-swiper
         height="300"
@@ -78,7 +78,7 @@
         >
           <view style="display: flex; justify-content: space-between">
             <view style="display: flex">
-              <image :src="item.avatar" mode=""></image>
+              <image :src="item.avatar" mode="aspectFill"></image>
               <view style="margin: auto 10px">
                 <view>{{ item.name }}</view>
                 <uni-rate allow-half active-color="red" :value="item.star" />
@@ -154,7 +154,7 @@
             <view style="height: 160px">
               <image
                 :src="item.coverUrl"
-                mode=""
+                mode="aspectFill"
                 style="width: 100%; height: 28vw"
               ></image>
               <view style="margin-left: 5px">
@@ -256,7 +256,7 @@
 
     <!-- 加入购物车/立即购买 弹窗 -->
     <up-popup :show="buyShow" mode="bottom" @close="close">
-      <scroll-view scroll-y="true" style="height: 50vh">
+      <scroll-view :scroll-y="true" style="height: 50vh">
         <view style="padding: 20px; display: flex">
           <img
             :src="img"
