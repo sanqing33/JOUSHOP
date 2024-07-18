@@ -24,7 +24,7 @@
       }
     },
     {
-      "path": "pages/categroy/categroy",
+      "path": "pages/category/category",
       "style": {
         "navigationBarTitleText": "分类",
         "enablePullDownRefresh": false
@@ -80,9 +80,16 @@
       }
     },
     {
-      "path": "pages/details/shppingcar",
+      "path": "pages/details/cart",
       "style": {
         "navigationBarTitleText": "购物车",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/order/detail",
+      "style": {
+        "navigationBarTitleText": "订单详情",
         "enablePullDownRefresh": false
       }
     }
@@ -102,13 +109,13 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/categroy/categroy",
+        "pagePath": "pages/category/category",
         "iconPath": "static/tabBar/分类.png",
         "selectedIconPath": "static/tabBar/分类2.png",
         "text": "分类"
       },
       {
-        "pagePath": "pages/details/shppingcar",
+        "pagePath": "pages/details/cart",
         "iconPath": "static/tabBar/购物车.png",
         "selectedIconPath": "static/tabBar/购物车2.png",
         "text": "购物车"

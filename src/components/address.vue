@@ -52,7 +52,7 @@
         ></up-icon>
       </view>
 
-      <view v-else style="margin: auto 0">
+      <view v-else style="margin: auto 0; width: 28px">
         <up-tag text="默认" bgColor="#fff" borderColor="#fff" color="#000">
         </up-tag>
       </view>

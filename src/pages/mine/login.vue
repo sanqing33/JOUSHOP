@@ -117,8 +117,8 @@ const login = async (type: string) => {
     userInfo.value = res.result;
   }
 
-  const User = userStore();
-  User.setUserInfo(userInfo.value!);
+  const UserStore = userStore();
+  UserStore.setUserInfo(userInfo.value!);
 
   uni.switchTab({ url: "/pages/mine/mine" });
 };

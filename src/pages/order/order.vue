@@ -1,4 +1,5 @@
 <template>
+  <!-- 选择地址 -->
   <view
     @click="showAddress"
     style="height: 60px; background: #fff; border-radius: 15px"
@@ -13,17 +14,26 @@
       "
       >选择地址</text
     >
-    <view v-else style="font-size: 18px">
-      <view style="display: flex; margin-left: 10px; padding-top: 5px">
-        <view style="width: 50px">{{ address.name }}</view>
-        <view style="margin-left: 20px">{{ address.phone }}</view>
+    <view
+      v-else
+      style="font-size: 18px; display: flex; justify-content: space-between"
+    >
+      <view>
+        <view style="display: flex; margin-left: 10px; padding-top: 5px">
+          <view style="width: 100px">{{ address[0].receiver }}</view>
+          <view style="margin-left: 20px">{{ address[0].contact }}</view>
+        </view>
+        <view style="margin-left: 10px">{{ address[0].address }}</view>
       </view>
-      <view style="margin-left: 10px">{{ address.address }}</view>
+      <view style="display: flex">
+        <view style="line-height: 60px">选择地址</view>
+        <up-icon name="arrow-right"></up-icon>
+      </view>
     </view>
   </view>
-
+  <!-- 
   <up-popup :show="show" mode="center" @close="close">
-    <scroll-view scroll-y="true" style="width: 100vw; height: 50vh">
+    <scroll-view :scroll-y="true" style="width: 100vw; height: 50vh">
       <view
         style="
           border: #dcdcdc 1px solid;
@@ -45,8 +55,9 @@
         </view>
       </view>
     </scroll-view>
-  </up-popup>
+ </up-popup> -->
 
+  <!-- 订单商品 -->
   <view
     style="
       background: #fff;
@@ -56,18 +67,17 @@
       height: calc(100vh - 60px - 65px - 40px);
     "
   >
-    <scroll-view scroll-y="true" style="height: calc(100vh - 150px - 100px)">
-      <view v-for="(item, index) in goods" :key="index">
-        <up-text size="20" :text="item.store"></up-text>
+    <scroll-view :scroll-y="true" style="height: calc(100vh - 150px - 100px)">
+      <view v-for="item in goods" :key="item.id">
         <view style="display: flex; line-height: 10vw; padding: 10px 0">
           <img
-            :src="item.img"
+            :src="item.picture"
             alt=""
             style="width: 30vw; height: 30vw; object-fit: cover"
           />
           <view style="flex: 1; margin-left: 10px">
-            <up-text size="20" :text="item.title"></up-text>
-            <up-text size="16" :text="item.value"></up-text>
+            <up-text size="20" :text="item.name"></up-text>
+            <up-text size="16" :text="item.attrsText"></up-text>
 
             <view style="display: flex; justify-content: space-between">
               <up-text
@@ -79,19 +89,26 @@
               <up-number-box
                 style="margin-right: 20px"
                 v-model="item.count"
-                @change=""
+                @change="changeCount($event, item.skuId)"
               ></up-number-box>
             </view>
           </view>
         </view>
       </view>
     </scroll-view>
+
+    <!-- 订单总计 -->
     <view
       style="margin-top: 20px; display: flex; justify-content: space-between"
     >
       <view>商品金额</view>
       <view>
-        <up-text color="red" size="16" mode="price" :text="prices"></up-text>
+        <up-text
+          color="red"
+          size="16"
+          mode="price"
+          :text="summary!.totalPrice"
+        ></up-text>
       </view>
     </view>
     <view
@@ -103,12 +120,13 @@
           color="black"
           size="16"
           mode="price"
-          :text="goods.freight"
+          :text="summary!.postFee"
         ></up-text>
       </view>
     </view>
   </view>
 
+  <!-- 提交订单 -->
   <view
     style="
       height: 65px;
@@ -119,81 +137,169 @@
       background: #fff;
     "
   >
-    <up-text color="red" size="22" mode="price" :text="prices"></up-text>
+    <up-text
+      color="red"
+      size="22"
+      mode="price"
+      :text="summary!.totalPayPrice"
+    ></up-text>
     <view style="width: 35vw">
-      <up-button type="primary" shape="circle" text="提交订单"></up-button>
+      <up-button
+        @click="submitOrder"
+        type="primary"
+        shape="circle"
+        text="提交订单"
+        color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
+      ></up-button>
     </view>
   </view>
+
+  <!-- 支付弹窗 -->
+  <up-popup
+    v-if="orderResult"
+    :show="showPay"
+    mode="bottom"
+    @open="showPay = true"
+    @close="showPay = false"
+  >
+    <view class="pay">
+      <view>
+        <text>订单号</text><text>{{ orderResult?.id }}</text>
+      </view>
+      <view>
+        <text>订单创建时间</text><text>{{ orderResult?.createTime }}</text>
+      </view>
+      <view>
+        <text>订单失效时间</text><text>{{ orderResult?.payLatestTime }}</text>
+      </view>
+      <view>
+        <text>商品总数</text><text>{{ orderResult?.totalNum }} 件</text>
+      </view>
+      <view>
+        <text>商品金额</text><text>¥{{ orderResult?.totalMoney }}</text>
+      </view>
+      <view>
+        <text>运费</text><text>¥{{ orderResult?.postFee }}</text>
+      </view>
+      <view style="margin-bottom: 20px">
+        <text>订单合计</text><text>¥{{ orderResult?.payMoney }}</text>
+      </view>
+      <up-button
+        @click="buy(orderResult!.id)"
+        type="primary"
+        shape="circle"
+        text="支付"
+        color="linear-gradient(120deg, #f6d365 0%, #fda085 100%)"
+      ></up-button>
+    </view>
+  </up-popup>
 </template>
 
 <script lang="ts" setup>
+import { putCartAPI } from "@/api/details";
+import { getAddressListAPI } from "@/api/mine";
+import {
+  getBuyNowOrderAPI,
+  getPayOrderListAPI,
+  postOrderAPI,
+  postPayOrderAPI,
+} from "@/api/order";
+import type { AddressList } from "@/types/global";
+import type { Goods, PostOrder, PostOrderResult, Summary } from "@/types/order";
 import { onLoad } from "@dcloudio/uni-app";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 
-const store = useStore();
+const goods = ref<Goods[]>();
 
-const goods = ref();
+const address = ref<AddressList[]>();
 
-const prices = ref();
+const summary = ref<Summary>();
 
-onLoad((option) => {
-  goods.value = [];
-
-  if (option.type == "buy") {
-    goods.value = [option];
-  } else if (option.type == "cart") {
-    goods.value = store.getters.getGoods;
+const getOrderList = async (type?: string, skuId?: string, count?: number) => {
+  let res;
+  if (type === "buy") {
+    address.value = (await getAddressListAPI()).result;
+    res = await getBuyNowOrderAPI(skuId!, count!);
+  } else {
+    res = await getPayOrderListAPI();
+    address.value = res.result.userAddresses;
   }
+  goods.value = res.result.goods;
 
-  console.log(goods.value);
+  /*  address.value = res.result.userAddresses.filter(
+    (item) => item.isDefault === 1
+  ); */
+  summary.value = res.result.summary;
+};
 
-  prices.value = goods.value.reduce((sum, item) => {
-    return sum + item.price * item.count;
-  }, 0);
+onLoad((option?: any) => {
+  getOrderList(option?.type, option?.skuId, option?.count);
 });
 
-const addresses = reactive([
-  {
-    name: "张三",
-    phone: "13812345678",
-    address: "北京市朝阳区",
-  },
-  {
-    name: "李四",
-    phone: "13812345678",
-    address: "北京市朝阳区",
-  },
-  {
-    name: "张三",
-    phone: "13812345678",
-    address: "北京市朝阳区",
-  },
-  {
-    name: "李四",
-    phone: "13812345678",
-    address: "北京市朝阳区",
-  },
-]);
-
-const show = ref(false);
-
-const address = ref();
-
-const showAddress = () => {
-  show.value = true;
+const changeCount = async (e: any, skuId: string) => {
+  await putCartAPI(skuId, e.value);
+  getOrderList();
 };
-const close = () => {
-  show.value = false;
+
+const orderResult = ref<PostOrderResult>();
+
+const submitOrder = async () => {
+  const data: PostOrder = {
+    goods: goods.value!.map((item) => {
+      return {
+        skuId: item.skuId,
+        count: item.count,
+      };
+    }),
+    addressId: address.value![0].id,
+    deliveryTimeType: 1,
+    buyerMessage: "",
+    payType: 1,
+    payChannel: 1,
+  };
+
+  const res = await postOrderAPI(data);
+
+  orderResult.value = res.result;
+
+  showPay.value = true;
 };
-const checkAddress = (item: any) => {
-  address.value = item;
-  show.value = false;
-  console.log(address.value);
+
+const showPay = ref(false);
+
+const buy = (id: string) => {
+  postPayOrderAPI(orderResult.value!.id);
+  uni.showToast({
+    title: "支付成功",
+    icon: "success",
+  });
+  uni.navigateTo({
+    url: `/pages/order/detail?id=${id}&type=1`,
+  });
 };
 </script>
 
 <style lang="scss" scoped>
 body {
   background: rgba(220, 220, 220, 0.5);
+}
+
+.pay {
+  margin: 20px;
+  font-size: 16px;
+
+  view {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+
+    &:nth-child(5),
+    &:nth-child(6),
+    &:nth-child(7) {
+      text:last-child {
+        color: #ff0000;
+      }
+    }
+  }
 }
 </style>

@@ -1,119 +1,175 @@
 <template>
-	<up-subsection @change="select" fontSize="16" :list="list" activeColor="rgb(187, 148, 102)" :current="type"></up-subsection>
-	<scroll-view scroll-y="true" style="height: calc(100vh - 78px); background: rgb(238, 238, 239)">
-		<view style="margin-bottom: 5px; padding: 5px 10px; background: #fff; border-radius: 20px" v-for="(item, index) in selectGoods" :key="index">
-			<view style="display: flex">
-				<up-text size="18" :text="item.store"></up-text>
-				<text style="text-align: right; padding: 5px">{{ item.state }}</text>
-			</view>
+  <up-subsection
+    @change="select"
+    fontSize="16"
+    :list="list"
+    activeColor="rgb(187, 148, 102)"
+    :current="type"
+  ></up-subsection>
+  <view
+    v-if="loading"
+    style="
+      background: #fff;
+      height: calc(100vh - 34px);
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    "
+  >
+    <up-loading-icon
+      text="加载中"
+      textSize="18"
+      mode="circle"
+    ></up-loading-icon>
+  </view>
 
-			<view style="display: flex; line-height: 15vw; padding: 10px 0">
-				<img :src="item.img" alt="" style="width: 30vw; height: 30vw; object-fit: cover; border-radius: 15px" />
-				<view style="flex: 1; margin-left: 10px">
-					<up-text size="20" :text="item.title"></up-text>
-					<up-text size="16" :text="item.value"></up-text>
-				</view>
-				<view>
-					<up-text color="red" size="20" mode="price" :text="item.price * item.count"></up-text>
-					<up-text size="18" :text="'共' + item.count + '件'"></up-text>
-				</view>
-			</view>
-		</view>
-	</scroll-view>
+  <scroll-view
+    v-else
+    :scroll-y="true"
+    style="height: calc(100vh - 34px); background: rgb(238, 238, 239)"
+    @scrolltolower="handleScroll"
+  >
+    <view
+      style="
+        margin-bottom: 5px;
+        padding: 5px 10px;
+        background: #fff;
+        border-radius: 20px;
+      "
+      v-for="(items, index) in orderList"
+      :key="index"
+      @click="toDetail(items.id)"
+    >
+      <view v-for="item in items.skus" :key="item.id">
+        <!--  <view style="display: flex">
+        <text style="text-align: right; padding: 5px">123</text>
+      </view> -->
+        <view style="display: flex; line-height: 15vw; padding: 10px 0">
+          <img
+            :src="item.image"
+            alt=""
+            style="
+              width: 130px;
+              height: 130px;
+              object-fit: cover;
+              border-radius: 15px;
+            "
+          />
+          <view style="flex: 1; margin-left: 20px">
+            <view
+              style="
+                font-size: 18px;
+                font-weight: bold;
+                line-height: 1.2;
+                height: 45px;
+              "
+            >
+              {{ item.name }}
+            </view>
+            <view
+              style="
+                margin-top: 5px;
+                color: #999;
+                font-size: 16px;
+                line-height: 1.1;
+                height: 36px;
+              "
+            >
+              {{ item.properties[0].propertyValueName }}
+            </view>
+            <view
+              style="
+                display: flex;
+                justify-content: space-between;
+                line-height: 1.1;
+                height: 36px;
+                font-size: 16px;
+                margin-top: 10px;
+              "
+            >
+              <view>共{{ items.totalNum }}件</view>
+              <view style="color: red; font-size: 18px; margin-right: 10px"
+                >¥{{ items.payMoney }}
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view style="text-align: center; padding: 10px 0; background: #f0f0f0">
+      {{ finish ? "没有更多数据了" : "正在加载中..." }}
+    </view>
+  </scroll-view>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { getOrderListAPI } from "@/api/order";
+import type { Page } from "@/types/global";
+import type { PostOrderResult } from "@/types/order";
+import { onLoad } from "@dcloudio/uni-app";
+import { ref } from "vue";
 
-const type = ref();
+const loading = ref<boolean>(true);
 
-onLoad((option) => {
-	type.value = option.type;
-	select(parseInt(option.type));
+const type = ref(0);
+
+onLoad((option: any) => {
+  type.value = parseInt(option.type);
+  select(parseInt(option.type));
 });
 
 const list = ref([
-	{ id: 0, name: '全部订单' },
-	{ id: 1, name: '待付款' },
-	{ id: 2, name: '待收货' },
-	{ id: 3, name: '待评价' }
+  { id: 0, name: "全部订单" },
+  { id: 1, name: "待付款" },
+  { id: 2, name: "待收货" },
+  { id: 3, name: "待评价" },
 ]);
 
-const goods = reactive([
-	{
-		store: '店铺名称1',
-		title: '商品名称',
-		value: '商品规格',
-		price: 100.0,
-		img: 'https://api.btstu.cn/sjbz/api.php',
-		count: 1,
-		state: '已成交'
-	},
-	{
-		store: '店铺名称2',
-		title: '商品名称',
-		value: '商品规格',
-		price: 100.0,
-		img: 'https://api.btstu.cn/sjbz/api.php',
-		count: 2,
-		state: '待付款'
-	},
-	{
-		store: '店铺名称3',
-		title: '商品名称',
-		value: '商品规格',
-		price: 100.0,
-		img: 'https://api.btstu.cn/sjbz/api.php',
-		count: 2,
-		state: '待收货'
-	},
-	{
-		store: '店铺名称4',
-		title: '商品名称',
-		value: '商品规格',
-		price: 100.0,
-		img: 'https://api.btstu.cn/sjbz/api.php',
-		count: 2,
-		state: '待评价'
-	},
-	{
-		store: '店铺名称5',
-		title: '商品名称',
-		value: '商品规格',
-		price: 100.0,
-		img: 'https://api.btstu.cn/sjbz/api.php',
-		count: 2,
-		state: '待评价'
-	},
-	{
-		store: '店铺名称6',
-		title: '商品名称',
-		value: '商品规格',
-		price: 100.0,
-		img: 'https://api.btstu.cn/sjbz/api.php',
-		count: 2,
-		state: '已成交'
-	}
-]);
+const orderList = ref<PostOrderResult[]>([]);
 
-const selectGoods = ref();
+const pageParams: Page = {
+  page: 1,
+  pageSize: 5,
+};
+
+let count = 0;
+
+const finish = ref(false);
+
+const getOrderList = async (index: number) => {
+  if (finish.value) return;
+
+  const res = await getOrderListAPI(index, pageParams);
+  orderList.value.push(...res.result.items);
+
+  if (pageParams.page! <= res.result.pages) {
+    pageParams.page!++;
+    count = pageParams.page! - 1;
+  } else {
+    finish.value = true;
+  }
+
+  loading.value = false;
+};
 
 const select = (index: number) => {
-	type.value = index;
-	switch (index) {
-		case 0:
-			selectGoods.value = goods;
-			break;
-		case 1:
-			selectGoods.value = goods.filter((item) => item.state === '待付款');
-			break;
-		case 2:
-			selectGoods.value = goods.filter((item) => item.state === '待收货');
-			break;
-		case 3:
-			selectGoods.value = goods.filter((item) => item.state === '待评价');
-	}
+  loading.value = true;
+  type.value = index;
+  getOrderList(index);
+};
+
+const handleScroll = () => {
+  count++;
+  if (count !== pageParams.page!) return;
+  getOrderList(type.value);
+};
+
+const toDetail = (id: string) => {
+  uni.navigateTo({
+    url: `/pages/order/detail?id=${id}`,
+  });
 };
 </script>
 

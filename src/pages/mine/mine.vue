@@ -6,13 +6,13 @@
   >
     <view class="perCenter">
       <view class="head">
-        <view v-if="User.userInfo">
+        <view v-if="UserStore.userInfo">
           <navigator url="/pages/mine/info">
-            <image :src="User.userInfo?.avatar" mode="scaleToFill"/>
+            <image :src="UserStore.userInfo?.avatar" mode="scaleToFill" />
             <text>{{
-              User.userInfo?.nickname
-                ? User.userInfo?.nickname
-                : User.userInfo?.account
+              UserStore.userInfo?.nickname
+                ? UserStore.userInfo?.nickname
+                : UserStore.userInfo?.account
             }}</text>
           </navigator>
         </view>
@@ -88,7 +88,7 @@ import type { Goods, Page } from "@/types/global";
 import { onLoad } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
 
-const User = userStore();
+const UserStore = userStore();
 
 const num = reactive({
   collect: 10,
@@ -103,6 +103,8 @@ const pageParams: Page = {
   pageSize: 10,
 };
 
+let count = 0;
+
 const finish = ref(false);
 
 const getMineGoods = async () => {
@@ -114,6 +116,7 @@ const getMineGoods = async () => {
 
   if (pageParams.page! <= res.result.pages) {
     pageParams.page!++;
+    count = pageParams.page! - 1;
   } else {
     finish.value = true;
   }
@@ -124,9 +127,10 @@ onLoad(() => {
 });
 
 const handleScroll = () => {
+  count++;
+  if (count !== pageParams.page!) return;
   getMineGoods();
 };
-
 </script>
 
 <style lang="scss" scoped>

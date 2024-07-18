@@ -7,10 +7,11 @@
 <script lang="ts" setup>
 import { getAddressListAPI } from "@/api/mine";
 import AddressUtile from "@/components/address.vue";
+import type { AddressList } from "@/types/global";
 import { onLoad } from "@dcloudio/uni-app";
 import { ref } from "vue";
 
-const addressList = ref();
+const addressList = ref<AddressList[]>();
 
 const getAddressList = async () => {
   const res = await getAddressListAPI();

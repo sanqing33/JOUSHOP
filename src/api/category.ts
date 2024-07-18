@@ -1,8 +1,8 @@
-import type { FirstCategroy } from "@/types/categroy";
+import type { Firstcategory } from "@/types/category";
 import { http } from "./index";
 
 export const getFirstCategoriesAPI = () => {
-  return http<FirstCategroy[]>({
+  return http<Firstcategory[]>({
     method: "GET",
     url: "/category/top",
   });

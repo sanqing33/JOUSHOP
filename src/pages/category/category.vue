@@ -56,7 +56,7 @@
                 style="height: 75px; width: 75px"
                 :src="goods.picture"
               ></image>
-              <view style="font-size: 14px; height: 36px; overflow: hidden">{{
+              <view style="font-size: 14px; height: 40px; overflow: hidden">{{
                 goods.name
               }}</view>
               <view style="font-size: 12px; color: red; text-align: right"
@@ -71,8 +71,8 @@
 </template>
 
 <script lang="ts" setup>
-import { getFirstCategoriesAPI } from "@/api/categroy";
-import type { FirstCategroy } from "@/types/categroy";
+import { getFirstCategoriesAPI } from "@/api/category";
+import type { Firstcategory } from "@/types/category";
 import { onLoad } from "@dcloudio/uni-app";
 import { computed, ref } from "vue";
 
@@ -88,7 +88,7 @@ const first_change = (index: number) => {
   first_check.value = index;
 };
 
-const first_categories = ref<FirstCategroy[]>([]);
+const first_categories = ref<Firstcategory[]>([]);
 
 const getFirstCategories = async () => {
   const res = await getFirstCategoriesAPI();

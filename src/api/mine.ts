@@ -64,7 +64,7 @@ export const updateUserInfoAPI = (data: UserInfo) => {
 
 // 获取收货地址
 export const getAddressListAPI = () => {
-  return http<AddressList>({
+  return http<AddressList[]>({
     method: "GET",
     url: "/member/address",
   });

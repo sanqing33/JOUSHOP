@@ -221,14 +221,14 @@
       v-model="isShowSku"
       :localdata="localdata"
       :mode="mode"
-      @add-cart="addcart"
+      @add-cart="addCart"
+      @buy-now="buy"
     />
   </view>
 </template>
 
 <script lang="ts" setup>
-import { getGoodsDetailAPI, postcartAPI } from "@/api/details";
-import Goods from "@/components/goods.vue";
+import { getGoodsDetailAPI, postCartAPI } from "@/api/details";
 import type { SkuPopupEvent } from "@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup";
 import vk_data_goods_sku_popup from "@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.vue";
 import { onLoad } from "@dcloudio/uni-app";
@@ -290,9 +290,9 @@ const evaluate = reactive({
   ],
 });
 
-const buy = () => {
+const buy = (e: SkuPopupEvent) => {
   uni.navigateTo({
-    url: `/pages/order/order?type=buy&store=${store.name}&freight=${freight.value}&value=${value.value}&count=${count.value}&title=${title.value}&img=${img.value}&price=${price.value}`,
+    url: `/pages/order/order?type=buy&skuId=${e._id}&count=${e.buy_num}`,
   });
 };
 
@@ -316,8 +316,8 @@ const showSku = (a: string) => {
   }
 };
 
-const addcart = async (e: SkuPopupEvent) => {
-  await postcartAPI(e._id, e.buy_num);
+const addCart = async (e: SkuPopupEvent) => {
+  await postCartAPI(e._id, e.buy_num);
   uni.showToast({ title: "添加成功" });
   isShowSku.value = false;
 };

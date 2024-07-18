@@ -34,7 +34,7 @@
     <!-- 首页分类 -->
     <view style="width: 90vw; margin: 10px auto">
       <view class="classification">
-        <view class="cf-box" v-for="item in categroies" :key="item.id">
+        <view class="cf-box" v-for="item in categories" :key="item.id">
           <navigator :url="item.icon" open-type="switchTab">
             <image class="icon" :src="item.icon" mode=""></image>
             <view class="title">{{ item.name }}</view>
@@ -44,7 +44,7 @@
       <!-- 分类标签 -->
       <up-tabs
         @click="categoryClick"
-        :list="categroy"
+        :list="category"
         :scrollable="false"
         lineWidth="50"
         lineColor="#f56c6c"
@@ -113,18 +113,18 @@ onLoad(() => {
 });
 
 // 首页分类
-const categroies = ref<HomeCategory[]>([]);
+const categories = ref<HomeCategory[]>([]);
 
 onLoad(() => {
   const getHomeCategory = async () => {
     const res = await getHomeCategoryAPI();
-    categroies.value = res.result;
+    categories.value = res.result;
   };
   getHomeCategory();
 });
 
 // 分类标签
-const categroy = ref([
+const category = ref([
   { name: "热卖", url: "/hot/inVogue" },
   { name: "精选", url: "/hot/oneStop", badge: { isDot: true } },
   { name: "特惠", url: "/hot/preference" },
@@ -139,9 +139,11 @@ const pageParams: Page = {
   pageSize: 10,
 };
 
+let count = 0;
+
 const finish = ref(false);
 
-const getHomeGoods = async (url: string = categroy.value[0].url) => {
+const getHomeGoods = async (url: string = category.value[0].url) => {
   if (finish.value) return;
   const res = await getHomeGoodsAPI(url, pageParams);
 
@@ -149,6 +151,7 @@ const getHomeGoods = async (url: string = categroy.value[0].url) => {
 
   if (pageParams.page! <= res.result.subTypes[0].goodsItems.pages) {
     pageParams.page!++;
+    count = pageParams.page! - 1;
   } else {
     finish.value = true;
   }
@@ -164,6 +167,8 @@ const categoryClick = (index: any) => {
 };
 
 const handleScroll = () => {
+  count++;
+  if (count !== pageParams.page!) return;
   getHomeGoods();
 };
 </script>

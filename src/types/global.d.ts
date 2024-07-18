@@ -52,3 +52,18 @@ export type AddressList = {
   postalCode?: string;
   provinceCode?: string;
 };
+
+// 购物车商品
+export type CartItem = {
+  id: string;
+  skuId: string;
+  name: string;
+  picture: string;
+  count: number;
+  price: number;
+  nowPrice: number;
+  stock: number;
+  selected: boolean;
+  attrsText: string;
+  isEffective: boolean;
+};
